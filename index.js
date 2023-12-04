@@ -26,10 +26,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
-    const myAssetsCollection = client
-      .db("quantumAssetDB")
-      .collection("myAssets");
-
+    const myAssetsCollection = client.db("quantumAssetDB").collection("myAssets");
     const assetCollection = client.db("quantumAssetDB").collection("assets");
     const userCollection = client.db("quantumAssetDB").collection("users");
 
@@ -180,9 +177,23 @@ async function run() {
     });
 
     //myAssets Collection
+    app.get('/myassets', async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const result = await myAssetsCollection.find(query).toArray();
+      res.send(result);
+    });
+
     app.post("/myassets", async (req, res) => {
       const myAssetsItem = req.body;
       const result = await myAssetsCollection.insertOne(myAssetsItem);
+      res.send(result);
+    });
+
+    app.delete('/myassets/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await myAssetsCollection.deleteOne(query);
       res.send(result);
     });
 
